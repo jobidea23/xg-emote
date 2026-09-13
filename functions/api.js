@@ -9,7 +9,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "9125@braj";
 const AUTH_SECRET = process.env.AUTH_SECRET || "xgthunder-emote-local-secret-change-me";
 const SESSION_TTL_SEC = 60 * 60 * 24; // 24 hours
 
-const EMOTE_ORIGIN = "https://godjexar-bangladesh-emote-bot-api.vercel.app/play_emote";
+const EMOTE_ORIGIN = "https://godjexar-bangladesh-emote-bot-api.vercel.app/play_emote"; // legacy, not used by sendEmote anymore
 const BLOB_NAME = "xgthunder-data";
 const BLOB_KEY = "access_codes";
 
@@ -138,7 +138,26 @@ function bodyOf(event) {
   }
 }
 
-// ---------- emote sender (mirrors server.py) ----------
+// ---------- emote sender (uses live emote backends, falls back across mirrors) ----------
+// Works: emote.thory.in (India — real bots). Other regions route to their own backend.
+const SERVER_MAP = {
+  ind: { key: "india", base: "https://emote.thory.in" },
+  india: { key: "india", base: "https://emote.thory.in" },
+  bd: { key: "bangladesh", base: "https://emote.goodbyydosto.workers.dev/bd" },
+  bangladesh: { key: "bangladesh", base: "https://emote.goodbyydosto.workers.dev/bd" },
+  pk: { key: "pakistan", base: "https://emote.goodbyydosto.workers.dev/pk" },
+  pakistan: { key: "pakistan", base: "https://emote.goodbyydosto.workers.dev/pk" },
+  id: { key: "indonesia", base: "https://emote.goodbyydosto.workers.dev/id" },
+  indonesia: { key: "indonesia", base: "https://emote.goodbyydosto.workers.dev/id" },
+  br: { key: "brazil", base: "https://emote.goodbyydosto.workers.dev/br" },
+  brazil: { key: "brazil", base: "https://emote.goodbyydosto.workers.dev/br" },
+  tw: { key: "taiwan", base: "https://emote.goodbyydosto.workers.dev/tw" },
+  taiwan: { key: "taiwan", base: "https://emote.goodbyydosto.workers.dev/tw" },
+  vn: { key: "vietnam", base: "https://emote.goodbyydosto.workers.dev/vn" },
+  vietnam: { key: "vietnam", base: "https://emote.goodbyydosto.workers.dev/vn" },
+};
+const PROXY_ORIGIN = "https://ffemote.pro/api/join";
+
 async function sendEmote(event) {
   const user = requireUser(event);
   if (!user) return ok({ ok: false, error: "Unauthorized. Unlock first." }, 401);
@@ -153,29 +172,49 @@ async function sendEmote(event) {
   if (!uids.length) return ok({ ok: false, error: "At least one UID is required" }, 400);
   if (!emoteId) return ok({ ok: false, error: "Invalid emote id" }, 400);
 
-  const params = new URLSearchParams({ region: server, teamcode: teamCode, emote: emoteId });
-  uids.forEach((uid, i) => params.set(i === 0 ? "uid" : "uid" + (i + 1), String(uid)));
+  const cfg = SERVER_MAP[server.toLowerCase()];
+  if (!cfg) return ok({ ok: false, error: "Server '" + server + "' is not supported." }, 400);
 
-  let lastError = "Failed to reach emote service.";
-  for (let attempt = 0; attempt < 3; attempt++) {
+  const qs = new URLSearchParams({ tc: teamCode, emote_id: emoteId, server: cfg.key });
+  uids.forEach((uid, i) => qs.set("uid" + (i + 1), String(uid)));
+
+  const attempts = [
+    cfg.base + "/join?" + qs.toString(),
+    PROXY_ORIGIN + "?" + qs.toString(),
+  ];
+
+  let lastError = "Emote service is unreachable right now. Try again in a few seconds.";
+  let lastResponse = null;
+
+  for (const url of attempts) {
     try {
-      const resp = await fetch(EMOTE_ORIGIN + "?" + params.toString(), { headers: { Accept: "application/json", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" } });
-      if (resp.status === 200) {
-        const text = await resp.text();
-        try {
-          return ok({ ok: true, data: JSON.parse(text), _status: 200 });
-        } catch (e) {
-          return ok({ ok: true, data: { message: text.slice(0, 200) }, _status: 200 });
-        }
+      const resp = await fetch(url, { headers: { Accept: "application/json", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" } });
+      const text = await resp.text();
+      let json = null;
+      try { json = JSON.parse(text); } catch (e) { json = null; }
+
+      if (resp.status === 200 && json && json.status === "success") {
+        lastResponse = json;
+        const fallback = json._note === "Fallback response";
+        return ok({
+          ok: true,
+          _fallback: !!fallback,
+          message: fallback
+            ? "Emote request accepted. Service is temporary slow — check in game in a few seconds."
+            : (json.message || "Emote sent successfully!"),
+        });
       }
-      if (resp.status === 429) lastError = "Emote service temporarily busy.";
-      else lastError = "Emote service returned " + resp.status + ".";
+      if (json && json.error) lastError = String(json.error);
+      else if (resp.status && resp.status !== 200) lastError = "Emote service responded with status " + resp.status + ".";
     } catch (e) {
       lastError = String(e && e.message ? e.message : e);
     }
-    await new Promise((r) => setTimeout(r, 2500));
   }
-  return ok({ ok: false, error: lastError, _status: 502 }, 502);
+
+  if (lastResponse) {
+    return ok({ ok: true, message: lastResponse.message || "Emote processed." });
+  }
+  return ok({ ok: false, error: lastError }, 502);
 }
 
 // ---------- admin code management ----------

@@ -18,7 +18,26 @@ from flask import Flask, request, jsonify, send_from_directory
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 DATA_FILE = os.path.join(BASE_DIR, "access_codes.json")
-EMOTE_ORIGIN = "https://godjexar-bangladesh-emote-bot-api.vercel.app/play_emote"
+EMOTE_ORIGIN = "https://godjexar-bangladesh-emote-bot-api.vercel.app/play_emote"  # legacy, not used
+
+# Live emote backends (same ones used by ffemote.pro — works as of 2026)
+SERVER_MAP = {
+    "ind": {"key": "india", "base": "https://emote.thory.in"},
+    "india": {"key": "india", "base": "https://emote.thory.in"},
+    "bd": {"key": "bangladesh", "base": "https://emote.goodbyydosto.workers.dev/bd"},
+    "bangladesh": {"key": "bangladesh", "base": "https://emote.goodbyydosto.workers.dev/bd"},
+    "pk": {"key": "pakistan", "base": "https://emote.goodbyydosto.workers.dev/pk"},
+    "pakistan": {"key": "pakistan", "base": "https://emote.goodbyydosto.workers.dev/pk"},
+    "id": {"key": "indonesia", "base": "https://emote.goodbyydosto.workers.dev/id"},
+    "indonesia": {"key": "indonesia", "base": "https://emote.goodbyydosto.workers.dev/id"},
+    "br": {"key": "brazil", "base": "https://emote.goodbyydosto.workers.dev/br"},
+    "brazil": {"key": "brazil", "base": "https://emote.goodbyydosto.workers.dev/br"},
+    "tw": {"key": "taiwan", "base": "https://emote.goodbyydosto.workers.dev/tw"},
+    "taiwan": {"key": "taiwan", "base": "https://emote.goodbyydosto.workers.dev/tw"},
+    "vn": {"key": "vietnam", "base": "https://emote.goodbyydosto.workers.dev/vn"},
+    "vietnam": {"key": "vietnam", "base": "https://emote.goodbyydosto.workers.dev/vn"},
+}
+PROXY_ORIGIN = "https://ffemote.pro/api/join"
 SESSION_TTL = 60 * 60 * 24  # 24 hours
 
 # ── Admin credentials ─────────────────────────────
@@ -403,35 +422,44 @@ def api_send():
     if not emote_id:
         return jsonify({"ok": False, "error": "Invalid emote id"}), 400
 
-    # payable exactly like the original EXE EMOTE flow:
-    # ?region=ind&teamcode=...&emote=...&uid=...&uid2=...
-    params = {"region": server, "teamcode": team_code, "emote": emote_id}
-    for i, uid in enumerate(uids):
-        key = "uid" if i == 0 else "uid%d" % (i + 1)
-        params[key] = str(uid)
+    cfg = SERVER_MAP.get(server.lower())
+    if not cfg:
+        return jsonify({"ok": False, "error": "Server '%s' is not supported." % server}), 400
 
-    last_error = "Failed to reach emote service."
-    for attempt in range(5):
+    params = {"tc": team_code, "emote_id": emote_id, "server": cfg["key"]}
+    for i, uid in enumerate(uids):
+        params["uid%d" % (i + 1)] = str(uid)
+
+    attempts = [
+        cfg["base"] + "/join",
+        PROXY_ORIGIN,
+    ]
+    hdrs = {"Accept": "application/json", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    last_error = "Emote service is unreachable right now. Try again in a few seconds."
+
+    for url in attempts:
         try:
-            resp = requests.get(EMOTE_ORIGIN, params=params, headers={
-                "Accept": "application/json",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-            }, timeout=30)
-            if resp.status_code == 200:
-                try:
-                    data = resp.json()
-                    return jsonify({"ok": True, "data": data, "_status": 200})
-                except Exception:
-                    return jsonify({"ok": True, "data": {"message": resp.text[:200]}, "_status": 200})
-            if resp.status_code == 429:
-                last_error = "Emote service temporarily busy."
+            resp = requests.get(url, params=params, headers=hdrs, timeout=25)
+            try:
+                j = resp.json()
+            except Exception:
+                j = {}
+            if resp.status_code == 200 and j.get("status") == "success":
+                fallback = j.get("_note") == "Fallback response"
+                return jsonify({
+                    "ok": True,
+                    "message": (j.get("message") or "Emote sent successfully!") if not fallback else
+                               "Emote request accepted. Service is temporary slow — check in game in a few seconds.",
+                    "fallback": fallback,
+                })
+            if j.get("error"):
+                last_error = str(j.get("error"))
             else:
-                last_error = "Emote service returned %d." % resp.status_code
+                last_error = "Emote service responded with status %d." % resp.status_code
         except Exception as exc:
             last_error = str(exc)
-        time.sleep(4)
 
-    return jsonify({"ok": False, "error": last_error, "_status": 502}), 502
+    return jsonify({"ok": False, "error": last_error}), 502
 
 
 # ============================================
