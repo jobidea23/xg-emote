@@ -1,0 +1,33 @@
+[build]
+  publish = "."
+  command = ""
+
+[functions]
+  directory = "functions"
+  node_bundler = "esbuild"
+  node_version = 18
+
+# send all /api/* calls to the single function (frontend unchanged)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+# block server-side / local files from being downloaded on Netlify
+[[redirects]]
+  from = "/*.py"
+  to = "/index.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/*.tmp"
+  to = "/index.html"
+  status = 404
+  force = true

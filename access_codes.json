@@ -1,0 +1,31 @@
+{
+  "codes": {
+    "EXE": {
+      "code": "EXE",
+      "created": 1789268724.341408,
+      "expires": null,
+      "max_uses": null,
+      "used": 12,
+      "enabled": false,
+      "note": "updated note"
+    },
+    "91": {
+      "code": "91",
+      "created": 1789271166.5493267,
+      "expires": null,
+      "max_uses": null,
+      "used": 2,
+      "enabled": true,
+      "note": ""
+    },
+    "9125": {
+      "code": "9125",
+      "created": 1789271356.3338919,
+      "expires": null,
+      "max_uses": null,
+      "used": 1,
+      "enabled": true,
+      "note": ""
+    }
+  }
+}

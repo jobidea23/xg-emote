@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>XG THUNDER 2.0 — Admin Panel</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="style.css?v=3" />
+  <link rel="stylesheet" href="admin.css?v=3" />
+</head>
+<body>
+
+  <!-- ═══════════ ADMIN LOGIN ═══════════ -->
+  <section id="admin-login-screen" class="admin-login-screen">
+    <div class="bg-gradient-gaming"></div>
+
+    <div class="admin-card">
+      <div class="login-logo-box logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" x2="4" y1="21" y2="14"></line>
+          <line x1="4" x2="4" y1="10" y2="3"></line>
+          <line x1="12" x2="12" y1="21" y2="12"></line>
+          <line x1="12" x2="12" y1="8" y2="3"></line>
+          <line x1="20" x2="20" y1="21" y2="16"></line>
+          <line x1="20" x2="20" y1="12" y2="3"></line>
+          <line x1="1" x2="23" y1="14" y2="14"></line>
+          <line x1="1" x2="23" y1="8" y2="8"></line>
+        </svg>
+      </div>
+
+      <h1 class="login-title">ADMIN PANEL</h1>
+      <p class="login-subtitle">XG THUNDER 2.0 · CONTROL CENTER</p>
+
+      <div class="space-y-4" style="margin-top: 24px;">
+        <div class="space-y-2">
+          <label class="form-label" for="admin-username">Username</label>
+          <input id="admin-username" class="form-input" type="text" placeholder="Enter username" autocomplete="off" spellcheck="false" />
+        </div>
+
+        <div class="space-y-2">
+          <label class="form-label" for="admin-password">Password</label>
+          <div class="password-wrap">
+            <input
+              id="admin-password"
+              class="form-input"
+              type="password"
+              placeholder="Enter password"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button id="toggle-password" class="eye-btn" type="button" title="Show / Hide password" aria-label="Show or hide password">
+              <svg class="eye-icon" id="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg class="eye-icon hidden-icon" id="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+                <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            </button>
+          </div>
+          <p class="pw-hint">Password always hidden. Tap the eye icon to reveal.</p>
+        </div>
+
+        <button id="btn-admin-login" class="signin-btn" type="button">SIGN IN</button>
+
+        <p class="login-error" id="admin-login-error" hidden></p>
+
+        <div class="admin-entry">
+          <a href="/" class="admin-link">← Back to website</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ ADMIN DASHBOARD ═══════════ -->
+  <section id="admin-dashboard" class="admin-page min-h-screen" hidden>
+    <div class="admin-page-bg">
+      <div class="bg-gradient-gaming animate-pulse"></div>
+      <div class="bg-radial-glow"></div>
+    </div>
+
+    <main class="admin-inner">
+
+      <!-- HEADER -->
+      <header class="dash-header" style="animation: none;">
+        <div class="dash-title-wrap">
+          <div class="logo-wrap">
+            <div class="logo-glow"></div>
+            <img src="assets/logo-Bnx-FX5a.jpg" alt="EXE EMOTE Logo" />
+          </div>
+          <div>
+            <h1 class="dash-title">ADMIN PANEL</h1>
+            <p class="dash-welcome">Access Code Management</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-refresh" class="neutral-btn" type="button">⟳ Refresh</button>
+          <button id="btn-admin-logout" class="logout-btn" type="button">Logout</button>
+        </div>
+      </header>
+
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="stat-card cyan">
+          <div class="stat-label">Total Codes</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+        <div class="stat-card cyan">
+          <div class="stat-label">Active</div>
+          <div class="stat-value" id="stat-active">0</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-label">Used Count</div>
+          <div class="stat-value" id="stat-used">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Server</div>
+          <div class="stat-value" style="font-size: 18px;">ONLINE</div>
+        </div>
+      </div>
+
+      <!-- CREATE CODE -->
+      <section class="game-card card-primary">
+        <div class="card-header">
+          <div class="card-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6"></path>
+              <polyline points="12 2 12 16"></polyline>
+              <rect x="8" y="8" width="8" height="8" rx="1"></rect>
+            </svg>
+          </div>
+          <div>
+            <h3>Generate New Access Code</h3>
+            <p>Ek code banao, user ko do — wo use karke unlock karega.</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="create-grid">
+            <div class="space-y-2">
+              <label class="form-label" for="new-code">Custom Code (optional)</label>
+              <input id="new-code" class="custom-input" style="height: 48px;" type="text" placeholder="EXE-XYZ123" autocomplete="off" spellcheck="false" maxlength="24" />
+              <p class="pw-hint">Blank hoga to apne aap generate hoga (EXE-XXXXXX).</p>
+            </div>
+            <div class="space-y-2">
+              <label class="form-label" for="new-max-uses">Max Uses (optional)</label>
+              <input id="new-max-uses" class="custom-input" style="height: 48px;" type="number" min="1" placeholder="Unlimited" />
+              <p class="pw-hint">Kitni baar ye code chalega. Blank = unlimited.</p>
+            </div>
+            <div class="space-y-2">
+              <label class="form-label" for="new-expires">Expire After (seconds)</label>
+              <input id="new-expires" class="custom-input" style="height: 48px;" type="number" min="1" placeholder="e.g. 86400 (24h)" />
+              <p class="pw-hint">Blank = kabhi expire nahi hoga.</p>
+            </div>
+            <div class="space-y-2">
+              <label class="form-label" for="new-note">Note (optional)</label>
+              <input id="new-note" class="custom-input" style="height: 48px;" type="text" placeholder="user request / sale" autocomplete="off" spellcheck="false" maxlength="80" />
+            </div>
+          </div>
+
+          <button id="btn-create-code" class="gradient-btn" style="width: 100%; height: 50px;" type="button">+ CREATE ACCESS CODE</button>
+          <div id="create-result" class="create-result" hidden></div>
+        </div>
+      </section>
+
+      <!-- CODE LIST -->
+      <section class="game-card card-primary">
+        <div class="card-header justify-between">
+          <div class="flex items-center gap-2">
+            <div class="card-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                <circle cx="9" cy="9" r="2"></circle>
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+              </svg>
+            </div>
+            <div>
+              <h3>All Access Codes</h3>
+              <p>Manage / enable / disable / delete</p>
+            </div>
+          </div>
+          <span class="tag tag-ok" id="code-count">0 codes</span>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="codes-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Status</th>
+                  <th>Used / Max</th>
+                  <th>Expires</th>
+                  <th>Note</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="codes-body">
+                <tr><td colspan="6" class="emote-loading">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </section>
+
+  <!-- TOASTS -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <script src="admin.js?v=2"></script>
+</body>
+</html>

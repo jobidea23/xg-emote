@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>XG THUNDER 2.0 — EXE EMOTE</title>
+  <meta name="description" content="Control and manage your gaming emotes with ease." />
+  <link rel="stylesheet" href="style.css?v=4" />
+</head>
+<body>
+
+  <!-- ═══════════ LOGIN / ACCESS CODE ═══════════ -->
+  <section id="unlock-screen" class="login-screen">
+    <div class="bg-gradient-gaming"></div>
+
+    <div class="login-card">
+      <div class="login-logo-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 12h4"></path>
+          <path d="M8 10v4"></path>
+          <path d="M15 13h.01"></path>
+          <path d="M18 11h.01"></path>
+          <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+        </svg>
+      </div>
+
+      <h1 class="login-title">Emote Bot</h1>
+      <p class="login-subtitle">Login to access your emote dashboard</p>
+
+      <div class="space-y-4" style="margin-top: 24px;">
+        <div class="space-y-2">
+          <label class="form-label" for="access-code">Access Code</label>
+          <input
+            id="access-code"
+            class="form-input"
+            type="password"
+            placeholder="Enter access code"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            maxlength="24"
+          />
+        </div>
+
+        <button id="btn-unlock" class="btn-login" type="button">LOGIN</button>
+
+        <p class="login-error" id="login-error" hidden></p>
+
+        <a class="get-code-link" id="get-code-link" href="https://youtube.com/@exebot?si=gyE2HEXL1fGgiGmr" target="_blank" rel="noopener">
+          Get Access Code
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ DASHBOARD (AFTER UNLOCK) ═══════════ -->
+  <section id="dashboard" class="dashboard min-h-screen" hidden>
+    <div class="dashboard-bg">
+      <div class="bg-gradient-gaming animate-pulse"></div>
+      <div class="bg-radial-glow"></div>
+    </div>
+
+    <div class="dash-inner">
+
+      <!-- HEADER -->
+      <header class="dash-header">
+        <div class="dash-title-wrap">
+          <div class="logo-wrap">
+            <div class="logo-glow"></div>
+            <img src="assets/xg-logo.jpg" alt="XG THUNDER Logo" />
+          </div>
+          <div>
+            <h1 class="dash-title">EMOTE DASHBOARD</h1>
+            <p class="dash-welcome" style="display: block;">Welcome to <span class="brand-gradient">XG THUNDER EMOTE</span> Website</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-admin-login" class="admin-mini-login" type="button" title="Admin Login" aria-label="Admin Login">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+            </svg>
+          </button>
+          <button id="btn-logout" class="btn-logout" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" x2="9" y1="12" y2="12"></line>
+            </svg>
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <!-- TEAM CODE -->
+      <div class="game-card card-primary">
+        <div class="card-header">
+          <div class="card-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 12h4"></path>
+              <path d="M8 10v4"></path>
+              <path d="M15 13h.01"></path>
+              <path d="M18 11h.01"></path>
+              <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+            </svg>
+          </div>
+          <div>
+            <h3>Team Code</h3>
+            <p>Enter your game team code</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <label class="form-label" for="team-code">Team Code</label>
+          <input id="team-code" class="field-input" type="text" placeholder="Enter team code" autocomplete="off" />
+        </div>
+      </div>
+
+      <!-- USER IDS -->
+      <div class="game-card card-secondary">
+        <div class="card-header justify-between">
+          <div class="flex items-center gap-2">
+            <div class="card-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div>
+              <h3>User IDs</h3>
+              <p>Add up to 4 UIDs for batch processing</p>
+            </div>
+          </div>
+          <button id="btn-add-uid" class="btn-add-uid" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <line x1="19" x2="19" y1="8" y2="14"></line>
+              <line x1="22" x2="16" y1="11" y2="11"></line>
+            </svg>
+            Add UID
+          </button>
+        </div>
+        <div class="card-body space-y-4" id="uid-list"></div>
+      </div>
+
+      <!-- SELECT EMOTE -->
+      <div class="game-card card-primary">
+        <div class="card-header">
+          <div class="card-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+              <line x1="9" x2="9.01" y1="9" y2="9"></line>
+              <line x1="15" x2="15.01" y1="9" y2="9"></line>
+            </svg>
+          </div>
+          <div>
+            <h3>Select Emote</h3>
+            <p>Choose from preset emotes or enter custom ID</p>
+          </div>
+        </div>
+        <div class="card-body space-y-8">
+
+          <!-- EVO EMOTES -->
+          <div class="space-y-4">
+            <div class="section-divider">
+              <span class="line l-primary"></span>
+              <span class="label lp">🔫 EVO EMOTES</span>
+              <span class="line r-primary"></span>
+            </div>
+            <div class="emote-grid" id="evo-grid"></div>
+          </div>
+
+          <!-- NORMAL EMOTES -->
+          <div class="space-y-4">
+            <div class="section-divider">
+              <span class="line l-secondary"></span>
+              <span class="label ls">🎭 NORMAL EMOTES</span>
+              <span class="line r-secondary"></span>
+            </div>
+            <div class="emote-grid" id="normal-grid"></div>
+          </div>
+
+          <!-- RARE EMOTES -->
+          <div class="space-y-4">
+            <div class="section-divider">
+              <span class="line l-rare"></span>
+              <span class="label lr">💎 RARE EMOTES</span>
+              <span class="line r-rare"></span>
+            </div>
+            <div class="emote-grid" id="rare-grid"></div>
+          </div>
+
+          <!-- CUSTOM EMOTE -->
+          <div class="custom-row">
+            <label class="custom-label" for="emote-id">
+              <span class="pulse-dot"></span>
+              Or Enter Custom Emote ID
+            </label>
+            <div class="custom-input-row">
+              <input id="emote-id" class="custom-input" type="text" placeholder="Enter custom emote ID..." autocomplete="off" />
+              <button id="btn-send" class="btn-send" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; vertical-align: -5px; margin-right: 6px;">
+                  <line x1="22" x2="11" y1="2" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                Send
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- INFO STRIP -->
+      <div class="info-strip">
+        <span class="pulse-dot"></span>
+        <span id="info-text">Emote select karke send dabao — UID all pe emote jayega.</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════ ADMIN PANEL (MODAL) ═══════════ -->
+  <div id="admin-modal" class="admin-modal" hidden>
+    <div class="admin-modal-backdrop" data-admin-close></div>
+    <div class="admin-modal-card">
+
+      <!-- LOGIN VIEW -->
+      <div id="admin-login-view" class="admin-view">
+        <div class="login-logo-box admin-modal-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+          </svg>
+        </div>
+        <h1 class="login-title" style="font-size: 22px;">ADMIN LOGIN</h1>
+        <p class="login-subtitle" style="font-size: 13px;">Super Admin — only for you</p>
+        <div class="space-y-4" style="margin-top: 20px;">
+          <div class="space-y-2">
+            <label class="form-label" for="ad-username">Username</label>
+            <input id="ad-username" class="form-input" type="text" placeholder="Enter admin username" autocomplete="off" spellcheck="false" />
+          </div>
+          <div class="space-y-2">
+            <label class="form-label" for="ad-password">Password</label>
+            <div class="password-wrap">
+              <input id="ad-password" class="form-input" type="password" placeholder="Enter admin password" autocomplete="off" spellcheck="false" />
+              <button id="ad-toggle-pw" class="eye-btn" type="button" title="Show / Hide password" aria-label="Show or hide password">
+                <svg class="eye-icon" id="ad-eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg class="eye-icon hidden-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+                  <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+            <p class="pw-hint">Password always hidden. Eye icon se dekh sakte ho.</p>
+          </div>
+          <button id="btn-ad-login" class="signin-btn" type="button">SIGN IN</button>
+          <p class="login-error" id="ad-login-error" hidden></p>
+        </div>
+      </div>
+
+      <!-- PANEL VIEW -->
+      <div id="admin-panel-view" class="admin-view" hidden>
+        <div class="admin-profile-bar">
+          <div class="admin-profile-chip">
+            <img src="assets/xg-logo.jpg" alt="Admin" />
+            <span>Admin Login</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btn-ad-refresh" class="mini-danger-btn" type="button">⟳</button>
+            <button id="btn-ad-logout" class="mini-danger-btn" type="button">Logout</button>
+          </div>
+        </div>
+
+        <div class="admin-panel-section">
+          <label class="admin-section-label">➕ New Access Code</label>
+          <div class="admin-grid-2">
+            <div class="space-y-1">
+              <label class="form-label" for="ad-new-code">Code (optional)</label>
+              <input id="ad-new-code" class="custom-input" style="height: 44px;" type="text" placeholder="EXE-XXXXXX" maxlength="24" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="space-y-1">
+              <label class="form-label" for="ad-new-uses">Max Uses (blank = ∞)</label>
+              <input id="ad-new-uses" class="custom-input" style="height: 44px;" type="number" min="1" placeholder="Unlimited" />
+            </div>
+            <div class="space-y-1">
+              <label class="form-label" for="ad-new-exp">Expire after (sec)</label>
+              <input id="ad-new-exp" class="custom-input" style="height: 44px;" type="number" min="1" placeholder="e.g. 86400 (24h)" />
+            </div>
+            <div class="space-y-1">
+              <label class="form-label" for="ad-new-note">Note</label>
+              <input id="ad-new-note" class="custom-input" style="height: 44px;" placeholder="kisi ko diya / kya ke liye" autocomplete="off" spellcheck="false" />
+            </div>
+          </div>
+          <button id="btn-ad-create" class="gradient-btn" style="width: 100%; height: 46px; margin-top: 12px;" type="button">+ CREATE ACCESS CODE</button>
+          <div id="ad-create-result" class="create-result" hidden></div>
+        </div>
+
+        <div class="admin-panel-section">
+          <div class="flex items-center justify-between" style="margin-bottom: 10px;">
+            <label class="admin-section-label">🔑 All Access Codes</label>
+            <span class="tag tag-ok" id="ad-code-count">0</span>
+          </div>
+          <div id="ad-codes-list" class="ad-codes-list"></div>
+        </div>
+
+        <div id="ad-edit-box" class="admin-edit-box" hidden>
+          <label class="admin-section-label" id="ad-edit-title">Edit Code</label>
+          <div class="admin-grid-2">
+            <div class="space-y-1">
+              <label class="form-label" for="ad-edit-uses">Max Uses (blank = ∞)</label>
+              <input id="ad-edit-uses" class="custom-input" style="height: 42px;" type="number" min="1" />
+            </div>
+            <div class="space-y-1">
+              <label class="form-label" for="ad-edit-exp">Extend expiry by (sec)</label>
+              <input id="ad-edit-exp" class="custom-input" style="height: 42px;" type="number" min="1" placeholder="blank = koi change nahi" />
+            </div>
+            <div class="space-y-1">
+              <label class="form-label" for="ad-edit-note">Note</label>
+              <input id="ad-edit-note" class="custom-input" style="height: 42px;" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="flex items-end gap-2" style="padding-bottom: 2px;">
+              <button id="btn-ad-edit-save" class="gradient-btn" style="height: 42px; flex: 1;" type="button">SAVE</button>
+              <button id="btn-ad-edit-cancel" class="btn-save-cancel" style="height: 42px; padding: 0 14px; border-radius: var(--radius); border: 1px solid;" type="button">✕</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOASTS -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <script src="emotes.js?v=4"></script>
+  <script src="app.js?v=4"></script>
+</body>
+</html>
